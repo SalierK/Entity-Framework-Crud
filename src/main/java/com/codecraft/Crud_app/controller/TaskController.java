@@ -5,6 +5,7 @@ import com.codecraft.Crud_app.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,15 +15,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskController {
 
-
     private final TaskService taskService;
 
-    @RequestMapping
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN') || hasRole('PERSON')")
     public List<Task> getAllTask() {
         return taskService.getAllEmployees();
     }
 
-    @RequestMapping("/{id}")
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('PERSON')")
     public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
         return taskService.getTaskById(id)
                 .map(task -> new ResponseEntity<>(task, HttpStatus.OK))
@@ -30,11 +32,13 @@ public class TaskController {
     }
 
     @PostMapping
-public Task createTask(@RequestBody Task task) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public Task createTask(@RequestBody Task task) {
         return taskService.saveTask(task);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task taskDetails) {
        return taskService.getTaskById(id)
                 .map(task -> {
@@ -44,13 +48,12 @@ public Task createTask(@RequestBody Task task) {
 
                     return new ResponseEntity<>(taskService.saveTask(task), HttpStatus.OK);
                 }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> deleteTaskById(@PathVariable Long id) {
         taskService.deleteTaskById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }
