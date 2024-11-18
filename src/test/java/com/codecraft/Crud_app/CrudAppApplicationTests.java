@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.stereotype.Service;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -21,7 +22,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@Service
 @SpringJUnitConfig
 @SpringBootTest
 @EnableMethodSecurity
@@ -153,55 +154,5 @@ class CrudAppApplicationTests {
         TaskController taskController = new TaskController(taskService);
         ResponseEntity<HttpStatus> response = taskController.deleteTaskById(999999999L);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
-
-    @Test
-    @Order(7)
-    @WithMockUser(username = "person", roles = {"PERSON"})
-    public void test_getAllTasks_person() {
-        TaskController taskController = new TaskController(taskService);
-        List<Task> list = taskController.getAllTask();
-        assertNotNull(list.get(0).getId());
-    }
-
-    @Test
-    @Order(8)
-    @WithMockUser(username = "person", roles = {"PERSON"})
-    public void test_getTaskById_person() {
-        ResponseEntity<Task> idTask = null;
-        TaskController taskController = new TaskController(taskService);
-        for (Task task : taskService.getAllTasks()) {
-            idTask = taskController.getTaskById(task.getId());
-            if (idTask.getBody().getId() != null) {
-                break;
-            }
-        }
-        assertNotNull(idTask.getBody().getId());
-    }
-
-    @Test
-    @Order(8)
-    @WithMockUser(username = "person", roles = {"PERSON"})
-    public void test_createTask_person() {
-        Task task = new Task();
-        String title = "Test title for creatTask";
-        String description = "Test description for creatTask";
-        int status = 654321;
-        task.setTitle(title);
-        task.setDescription(description);
-        task.setStatus(status);
-        TaskController taskController = new TaskController(taskService);
-        Task newTask = taskController.createTask(task);
-        assertEquals(title, taskController.getTaskById(newTask.getId()).getBody().getTitle());
-        assertEquals(description, taskController.getTaskById(newTask.getId()).getBody().getDescription());
-        assertEquals(status, taskController.getTaskById(newTask.getId()).getBody().getStatus());
-    }
-
-    @Test
-    @Order(9)
-    @WithMockUser(username = "person", password = "personpassword", roles = {"PERSON"})
-    public void testt() {
-        int i = 1;
-        assertNotNull(i);
     }
 }

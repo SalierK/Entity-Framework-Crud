@@ -37,23 +37,6 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
-        UserDetails person = User.withDefaultPasswordEncoder()
-                .username("person")
-                .password("personpassword")
-                .roles("PERSON")
-                .build();
-
-        UserDetails admin = User.withDefaultPasswordEncoder()
-                .username("admin")
-                .password("adminpassword")
-                .roles("ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(person, admin);
-    }
-
-    @Bean
     public CsrfTokenRepository csrfTokenRepository() {
         return CookieCsrfTokenRepository.withHttpOnlyFalse();
     }

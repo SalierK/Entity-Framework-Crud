@@ -25,12 +25,12 @@ public class TaskService {
         return taskRepository.findById(id);
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_PERSON"})
+    @Secured({"ROLE_ADMIN"})
     public Task saveTask(Task task) {
         return taskRepository.save(task);
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_PERSON"})
+    @Secured({"ROLE_ADMIN"})
     public void deleteTaskById(Long id) {
         taskRepository.deleteById(id);
     }
